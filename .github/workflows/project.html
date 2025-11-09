@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayEasy - Complete Payment Solution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .splash-screen {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .splash-screen.hidden {
+            display: none;
+        }
+        
+        .app-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .app-logo::after {
+            content: "₹";
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
+        }
+        
+        .app-name {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .app-tagline {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .main-menu, .money-transfer-menu, .recharge-bills-menu, .qr-section, .mobile-transfer, .bank-transfer, .self-transfer, .balance-section, .history-section, .receive-money, .mobile-recharge, .fastag-recharge, .electricity-bill, .payment-section, .payment-method-section, .password-section, .loading-section, .success-section {
+            display: none;
+        }
+        
+        .main-menu.active, .money-transfer-menu.active, .recharge-bills-menu.active, .qr-section.active, .mobile-transfer.active, .bank-transfer.active, .self-transfer.active, .balance-section.active, .history-section.active, .receive-money.active, .mobile-recharge.active, .fastag-recharge.active, .electricity-bill.active, .payment-section.active, .payment-method-section.active, .password-section.active, .loading-section.active, .success-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .menu-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .menu-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .history-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .history-details {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-amount {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .qr-display {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        #qrcode, #receiveQR {
+            display: inline-block;
+        }
+        
+        #qrcode canvas, #qrcode img, #receiveQR canvas, #receiveQR img {
+            display: block !important;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .payment-methods {
+            text-align: left;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .method-category {
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .payment-option.selected {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .payment-info {
+            flex-grow: 1;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .payment-desc {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .radio-check {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .payment-option.selected .radio-check {
+            border-color: #667eea;
+        }
+
+        .payment-option.selected .radio-check::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .amount-summary {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .amount-highlight {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+        
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            animation: scaleIn 0.5s ease;
+        }
+        
+        .success-icon::after {
+            content: "✓";
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-message {
+            color: #333;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .amount-display {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .payment-method-display {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        .thank-you {
+            color: #666;
+            font-size: 15px;
+        }
+        
+        .info-text {
+            color: #888;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        
+        .back-btn {
+            background: #f5f5f5;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .password-input-group {
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .password-input input {
+            padding-right: 50px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #999;
+        }
+
+        .security-note {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .security-note p {
+            color: #2e7d32;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .lock-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 25px;
+        }
+
+        .payment-details-box {
+            background: #f8f9ff;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .detail-value.amount {
+            color: #667eea;
+            font-size: 15px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            width: 60px;
+            height: 60px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .processing-steps {
+            text-align: left;
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .process-step.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .process-step::before {
+            content: '⏳';
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .process-step.active::before {
+            content: '✓';
+            color: #4caf50;
+        }
+
+        .transaction-id {
+            background: #f8f9ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-family: monospace;
+            color: #667eea;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .transaction-time {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-downloaded {
+            color: #4caf50;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .receipt-downloaded.show {
+            display: block;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .cashback-banner {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 12px;
+            border-radius: 10px;
+            margin: 15px 0;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .cashback-text {
+            color: #856404;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .cashback-amount {
+            color: #ff6b6b;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .cashback-subtext {
+            color: #856404;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .share-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed #e0e0e0;
+        }
+
+        .share-title {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .share-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .share-whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        .share-email {
+            background: #ea4335;
+            color: white;
+        }
+
+        .share-copy {
+            background: #667eea;
+            color: white;
+        }
+
+        .share-success {
+            color: #4caf50;
+            font-size: 11px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .share-success.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="splash-screen" id="splashScreen">
+            <div class="app-logo"></div>
+            <div class="app-name">PayEasy</div>
+            <div class="app-tagline">Complete Payment Solution</div>
+            <button class="btn" onclick="showMainMenu()">Get Started</button>
+        </div>
+
+        <div class="main-menu" id="mainMenu">
+            <h1>PayEasy</h1>
+            <p class="subtitle">Choose a service</p>
+
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showMoneyTransferMenu()">
+                    <div class="menu-icon">💸</div>
+                    <div class="menu-title">Money Transfer</div>
+                </div>
+                <div class="menu-item" onclick="showRechargeBillsMenu()">
+                    <div class="menu-icon">📱</div>
+                    <div class="menu-title">Recharge & Bills</div>
+                </div>
+                <div class="menu-item" onclick="showQR()">
+                    <div class="menu-icon">📷</div>
+                    <div class="menu-title">Scan & Pay</div>
+                </div>
+                <div class="menu-item" onclick="showBalance()">
+                    <div class="menu-icon">💰</div>
+                    <div class="menu-title">Balance</div>
+                </div>
+                <div class="menu-item" onclick="showHistory()">
+                    <div class="menu-icon">📜</div>
+                    <div class="menu-title">History</div>
+                </div>
+                <div class="menu-item" onclick="showReceiveMoney()">
+                    <div class="menu-icon">📥</div>
+                    <div class="menu-title">Receive Money</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="money-transfer-menu" id="moneyTransferMenu">
+            <h1>Money Transfer</h1>
+            <p class="subtitle">Select transfer type</p>
+
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showMobileTransfer()">
+                    <div class="menu-icon">📱</div>
+                    <div class="menu-title">To Mobile</div>
+                </div>
+                <div class="menu-item" onclick="showBankTransfer()">
+                    <div class="menu-icon">🏦</div>
+                    <div class="menu-title">To Bank A/C</div>
+                </div>
+                <div class="menu-item" onclick="showSelfTransfer()">
+                    <div class="menu-icon">🔄</div>
+                    <div class="menu-title">To Self A/C</div>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+
+        <div class="recharge-bills-menu" id="rechargeBillsMenu">
+            <h1>Recharge & Bills</h1>
+            <p class="subtitle">Select service</p>
+
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showMobileRecharge()">
+                    <div class="menu-icon">📱</div>
+                    <div class="menu-title">Mobile Recharge</div>
+                </div>
+                <div class="menu-item" onclick="showFastagRecharge()">
+                    <div class="menu-icon">🚗</div>
+                    <div class="menu-title">FASTag Recharge</div>
+                </div>
+                <div class="menu-item" onclick="showElectricityBill()">
+                    <div class="menu-icon">💡</div>
+                    <div class="menu-title">Electricity Bill</div>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+
+        <div class="mobile-transfer" id="mobileTransfer">
+            <h1>Transfer to Mobile</h1>
+            <p class="subtitle">Send money via mobile number</p>
+
+            <div class="input-group">
+                <label for="mobileNumber">Mobile Number</label>
+                <input type="tel" id="mobileNumber" placeholder="Enter 10 digit number" maxlength="10">
+            </div>
+
+            <div class="input-group">
+                <label for="mobileAmount">Amount (₹)</label>
+                <input type="number" id="mobileAmount" placeholder="0.00" min="1">
+            </div>
+
+            <button class="btn" onclick="proceedMobileTransfer()">Continue</button>
+            <button class="back-btn" onclick="goBackToMoneyTransfer()">← Back</button>
+        </div>
+
+        <div class="bank-transfer" id="bankTransfer">
+            <h1>Transfer to Bank A/C</h1>
+            <p class="subtitle">Send money to bank account</p>
+
+            <div class="input-group">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber" placeholder="Enter account number">
+            </div>
+
+            <div class="input-group">
+                <label for="ifscCode">IFSC Code</label>
+                <input type="text" id="ifscCode" placeholder="Enter IFSC code">
+            </div>
+
+            <div class="input-group">
+                <label for="bankAmount">Amount (₹)</label>
+                <input type="number" id="bankAmount" placeholder="0.00" min="1">
+            </div>
+
+            <button class="btn" onclick="proceedBankTransfer()">Continue</button>
+            <button class="back-btn" onclick="goBackToMoneyTransfer()">← Back</button>
+        </div>
+
+        <div class="self-transfer" id="selfTransfer">
+            <h1>Transfer to Self A/C</h1>
+            <p class="subtitle">Transfer to your linked account</p>
+
+            <div class="input-group">
+                <label for="selfAccount">Select Account</label>
+                <select id="selfAccount">
+                    <option value="">Choose account</option>
+                    <option value="sbi">SBI ****1234</option>
+                    <option value="hdfc">HDFC ****5678</option>
+                    <option value="icici">ICICI ****9012</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="selfAmount">Amount (₹)</label>
+                <input type="number" id="selfAmount" placeholder="0.00" min="1">
+            </div>
+
+            <button class="btn" onclick="proceedSelfTransfer()">Continue</button>
+            <button class="back-btn" onclick="goBackToMoneyTransfer()">← Back</button>
+        </div>
+
+        <div class="balance-section" id="balanceSection">
+            <h1>Wallet Balance</h1>
+            <p class="subtitle">Your current balance</p>
+
+            <div class="balance-card">
+                <div class="balance-label">Available Balance</div>
+                <div class="balance-amount">₹5,420.50</div>
+            </div>
+
+            <button class="btn" onclick="goToMain()">Add Money</button>
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+
+        <div class="history-section" id="historySection">
+            <h1>Transaction History</h1>
+            <p class="subtitle">Recent transactions</p>
+
+            <div class="history-item">
+                <div class="history-title">Mobile Recharge</div>
+                <div class="history-details">
+                    <span>Today, 2:30 PM</span>
+                    <span class="history-amount">-₹299</span>
+                </div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-title">Money Received</div>
+                <div class="history-details">
+                    <span>Yesterday, 11:20 AM</span>
+                    <span class="history-amount" style="color: #4caf50;">+₹1,500</span>
+                </div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-title">Electricity Bill</div>
+                <div class="history-details">
+                    <span>12 Oct, 6:45 PM</span>
+                    <span class="history-amount">-₹850</span>
+                </div>
+            </div>
+
+            <div class="history-item">
+                <div class="history-title">Bank Transfer</div>
+                <div class="history-details">
+                    <span>10 Oct, 3:15 PM</span>
+                    <span class="history-amount">-₹2,000</span>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+
+        <div class="receive-money" id="receiveMoney">
+            <h1>Receive Money</h1>
+            <p class="subtitle">Show this QR to receive payment</p>
+
+            <div class="qr-display">
+                <div id="receiveQR"></div>
+            </div>
+
+            <div class="info-text" style="margin: 15px 0;">Share your UPI ID: <strong>yourname@paytm</strong></div>
+
+            <button class="btn" onclick="shareUPI()">Share UPI ID</button>
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+
+        <div class="mobile-recharge" id="mobileRecharge">
+            <h1>Mobile Recharge</h1>
+            <p class="subtitle">Recharge your mobile</p>
+
+            <div class="input-group">
+                <label for="rechargeNumber">Mobile Number</label>
+                <input type="tel" id="rechargeNumber" placeholder="Enter 10 digit number" maxlength="10">
+            </div>
+
+            <div class="input-group">
+                <label for="operator">Select Operator</label>
+                <select id="operator">
+                    <option value="">Choose operator</option>
+                    <option value="airtel">RetryUContinuehtml                    <option value="jio">Jio</option>
+                    <option value="vi">Vi (Vodafone Idea)</option>
+                    <option value="bsnl">BSNL</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="rechargeAmount">Amount (₹)</label>
+                <input type="number" id="rechargeAmount" placeholder="0.00" min="1">
+            </div>
+
+            <button class="btn" onclick="proceedRecharge()">Continue</button>
+            <button class="back-btn" onclick="goBackToRechargeBills()">← Back</button>
+        </div>
+
+        <div class="fastag-recharge" id="fastagRecharge">
+            <h1>FASTag Recharge</h1>
+            <p class="subtitle">Recharge your FASTag</p>
+
+            <div class="input-group">
+                <label for="vehicleNumber">Vehicle Number</label>
+                <input type="text" id="vehicleNumber" placeholder="MH-12-AB-1234">
+            </div>
+
+            <div class="input-group">
+                <label for="fastagBank">Issuer Bank</label>
+                <select id="fastagBank">
+                    <option value="">Choose bank</option>
+                    <option value="sbi">State Bank of India</option>
+                    <option value="hdfc">HDFC Bank</option>
+                    <option value="icici">ICICI Bank</option>
+                    <option value="axis">Axis Bank</option>
+                    <option value="paytm">Paytm Payments Bank</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="fastagAmount">Amount (₹)</label>
+                <input type="number" id="fastagAmount" placeholder="0.00" min="100">
+            </div>
+
+            <button class="btn" onclick="proceedFastag()">Continue</button>
+            <button class="back-btn" onclick="goBackToRechargeBills()">← Back</button>
+        </div>
+
+        <div class="electricity-bill" id="electricityBill">
+            <h1>Electricity Bill</h1>
+            <p class="subtitle">Pay your electricity bill</p>
+
+            <div class="input-group">
+                <label for="electricityBoard">Electricity Board</label>
+                <select id="electricityBoard">
+                    <option value="">Choose board</option>
+                    <option value="mseb">MSEB Maharashtra</option>
+                    <option value="bses">BSES Delhi</option>
+                    <option value="tneb">TNEB Tamil Nadu</option>
+                    <option value="bescom">BESCOM Karnataka</option>
+                    <option value="uppcl">UPPCL Uttar Pradesh</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="consumerNumber">Consumer Number</label>
+                <input type="text" id="consumerNumber" placeholder="Enter consumer number">
+            </div>
+
+            <div class="input-group">
+                <label for="billAmount">Amount (₹)</label>
+                <input type="number" id="billAmount" placeholder="0.00" min="1">
+            </div>
+
+            <button class="btn" onclick="proceedBill()">Continue</button>
+            <button class="back-btn" onclick="goBackToRechargeBills()">← Back</button>
+        </div>
+
+        <div class="qr-section" id="qrSection">
+            <h1>Scan & Pay</h1>
+            <p class="subtitle">Scan QR code to pay</p>
+            
+            <div class="qr-display">
+                <div id="qrcode"></div>
+            </div>
+            
+            <button class="btn" onclick="showPayment()">Enter Payment Details</button>
+            <button class="back-btn" onclick="goToMain()">← Back to Main</button>
+        </div>
+        
+        <div class="payment-section" id="paymentSection">
+            <h1>Enter Payment Details</h1>
+            <p class="subtitle">Enter amount to proceed</p>
+            
+            <div class="input-group">
+                <label for="amount">Enter Amount (₹)</label>
+                <input type="number" id="amount" placeholder="0.00" min="1" step="0.01">
+            </div>
+            
+            <button class="btn" onclick="showPaymentMethods()">Continue</button>
+            <button class="back-btn" onclick="goBackFromPayment()">← Back</button>
+        </div>
+
+        <div class="payment-method-section" id="paymentMethodSection">
+            <h1>Select Payment Method</h1>
+            <p class="subtitle">Choose how you want to pay</p>
+
+            <div class="amount-summary">
+                <div class="summary-row">
+                    <span>Amount to Pay</span>
+                    <span class="amount-highlight">₹<span id="displayAmount">0.00</span></span>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <div class="method-category">
+                    <div class="category-title">UPI</div>
+                    <div class="payment-option" onclick="selectPayment('upi')">
+                        <div class="payment-icon">📱</div>
+                        <div class="payment-info">
+                            <div class="payment-name">UPI</div>
+                            <div class="payment-desc">Google Pay, PhonePe</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                </div>
+
+                <div class="method-category">
+                    <div class="category-title">Cards</div>
+                    <div class="payment-option" onclick="selectPayment('debit')">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-info">
+                            <div class="payment-name">Debit Card</div>
+                            <div class="payment-desc">Visa, Mastercard</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                    <div class="payment-option" onclick="selectPayment('credit')">
+                        <div class="payment-icon">💳</div>
+                        <div class="payment-info">
+                            <div class="payment-name">Credit Card</div>
+                            <div class="payment-desc">Visa, Mastercard</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                </div>
+
+                <div class="method-category">
+                    <div class="category-title">Net Banking</div>
+                    <div class="payment-option" onclick="selectPayment('sbi')">
+                        <div class="payment-icon">🏦</div>
+                        <div class="payment-info">
+                            <div class="payment-name">SBI</div>
+                            <div class="payment-desc">Net Banking</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                    <div class="payment-option" onclick="selectPayment('hdfc')">
+                        <div class="payment-icon">🏦</div>
+                        <div class="payment-info">
+                            <div class="payment-name">HDFC Bank</div>
+                            <div class="payment-desc">Net Banking</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                </div>
+
+                <div class="method-category">
+                    <div class="category-title">Wallets</div>
+                    <div class="payment-option" onclick="selectPayment('paytm')">
+                        <div class="payment-icon">💰</div>
+                        <div class="payment-info">
+                            <div class="payment-name">Paytm Wallet</div>
+                            <div class="payment-desc">Pay with balance</div>
+                        </div>
+                        <div class="radio-check"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" id="payBtn" onclick="showPasswordVerification()" disabled>Pay Now</button>
+            <button class="back-btn" onclick="goBack('amount')">← Back</button>
+        </div>
+
+        <div class="password-section" id="passwordSection">
+            <div class="lock-icon">🔒</div>
+            <h1>Verify Payment</h1>
+            <p class="subtitle">Enter your PIN/Password</p>
+
+            <div class="payment-details-box">
+                <div class="detail-row">
+                    <span class="detail-label">Amount</span>
+                    <span class="detail-value amount">₹<span id="verifyAmount">0.00</span></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method</span>
+                    <span class="detail-value" id="verifyMethod">-</span>
+                </div>
+            </div>
+
+            <div class="security-note">
+                <p>🔐 Your payment is secured with encryption</p>
+            </div>
+
+            <div class="password-input-group">
+                <label for="password">Enter PIN/Password</label>
+                <div class="password-input">
+                    <input type="password" id="password" placeholder="Enter PIN" maxlength="6">
+                    <button class="toggle-password" onclick="togglePassword()">👁️</button>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="processPayment()">Confirm Payment</button>
+            <button class="back-btn" onclick="goBack('methods')">← Back</button>
+        </div>
+
+        <div class="loading-section" id="loadingSection">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Processing Payment...</div>
+            <div class="loading-subtext">Please wait</div>
+
+            <div class="processing-steps">
+                <div class="process-step active" id="step1">Verifying credentials</div>
+                <div class="process-step" id="step2">Contacting bank</div>
+                <div class="process-step" id="step3">Confirming transaction</div>
+            </div>
+        </div>
+        
+        <div class="success-section" id="successSection">
+            <div class="success-icon"></div>
+            <div class="success-message">Payment Done!</div>
+            <div class="amount-display">₹<span id="paidAmount">0</span></div>
+            <div class="payment-method-display">Paid via <span id="paidMethod">UPI</span></div>
+            
+            <div class="cashback-banner">
+                <div class="cashback-text">🎉 Congratulations!</div>
+                <div class="cashback-amount">You earned ₹<span id="cashbackAmount">0</span> Cashback!</div>
+                <div class="cashback-subtext">Credited to wallet</div>
+            </div>
+            
+            <div class="transaction-id">
+                TXN ID: <span id="transactionId"></span>
+            </div>
+            <div class="transaction-time" id="transactionTime"></div>
+            
+            <div class="thank-you">Thank You!</div>
+            <p class="info-text">Transaction completed successfully</p>
+            
+            <button class="btn" onclick="downloadReceipt()">📥 Download Receipt</button>
+            <div class="receipt-downloaded" id="receiptMsg">✓ Receipt downloaded!</div>
+            
+            <div class="share-section">
+                <div class="share-title">Share Receipt</div>
+                <div class="share-buttons">
+                    <button class="share-btn share-whatsapp" onclick="shareWhatsApp()">💬 WhatsApp</button>
+                    <button class="share-btn share-email" onclick="shareEmail()">📧 Email</button>
+                    <button class="share-btn share-copy" onclick="copyReceipt()">📋 Copy</button>
+                </div>
+                <div class="share-success" id="shareMsg">✓ Copied!</div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="goToMain()">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const MY_WEBSITE_URL = window.location.origin + window.location.pathname;
+        
+        let qrGenerated = false;
+        let receiveQRGenerated = false;
+        let selectedMethod = null;
+        let selectedMethodName = '';
+        let currentTransactionType = '';
+        
+        const paymentNames = {
+            'upi': 'UPI', 'debit': 'Debit Card', 'credit': 'Credit Card',
+            'sbi': 'SBI Net Banking', 'hdfc': 'HDFC Net Banking',
+            'paytm': 'Paytm Wallet'
+        };
+        
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('pay') === 'true') {
+                document.getElementById('splashScreen').classList.add('hidden');
+                document.getElementById('paymentSection').classList.add('active');
+            }
+        };
+
+        function hideAll() {
+            document.querySelectorAll('.container > div').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
+            });
+            document.getElementById('splashScreen').classList.add('hidden');
+        }
+
+        function show(id) {
+            hideAll();
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function showMainMenu() { show('mainMenu'); }
+        function showMoneyTransferMenu() { show('moneyTransferMenu'); }
+        function showRechargeBillsMenu() { show('rechargeBillsMenu'); }
+        function showMobileTransfer() { show('mobileTransfer'); currentTransactionType = 'Mobile Transfer'; }
+        function showBankTransfer() { show('bankTransfer'); currentTransactionType = 'Bank Transfer'; }
+        function showSelfTransfer() { show('selfTransfer'); currentTransactionType = 'Self Transfer'; }
+        function showBalance() { show('balanceSection'); }
+        function showHistory() { show('historySection'); }
+        function showMobileRecharge() { show('mobileRecharge'); currentTransactionType = 'Mobile Recharge'; }
+        function showFastagRecharge() { show('fastagRecharge'); currentTransactionType = 'FASTag Recharge'; }
+        function showElectricityBill() { show('electricityBill'); currentTransactionType = 'Electricity Bill'; }
+
+        function showReceiveMoney() {
+            show('receiveMoney');
+            if (!receiveQRGenerated) {
+                new QRCode(document.getElementById("receiveQR"), {
+                    text: "upi://pay?pa=yourname@paytm&pn=YourName&cu=INR",
+                    width: 180, height: 180
+                });
+                receiveQRGenerated = true;
+            }
+        }
+
+        function showQR() {
+            show('qrSection');
+            if (!qrGenerated) {
+                const paymentUrl = MY_WEBSITE_URL + '?pay=true';
+                new QRCode(document.getElementById("qrcode"), {
+                    text: paymentUrl, width: 180, height: 180,
+                    colorDark: "#000000", colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                qrGenerated = true;
+            }
+        }
+
+        function goToMain() { show('mainMenu'); }
+        function goBackToMoneyTransfer() { show('moneyTransferMenu'); }
+        function goBackToRechargeBills() { show('rechargeBillsMenu'); }
+
+        function goBackFromPayment() {
+            if (currentTransactionType === 'Mobile Transfer') show('mobileTransfer');
+            else if (currentTransactionType === 'Bank Transfer') show('bankTransfer');
+            else if (currentTransactionType === 'Self Transfer') show('selfTransfer');
+            else if (currentTransactionType === 'Mobile Recharge') show('mobileRecharge');
+            else if (currentTransactionType === 'FASTag Recharge') show('fastagRecharge');
+            else if (currentTransactionType === 'Electricity Bill') show('electricityBill');
+            else show('qrSection');
+        }
+
+        function proceedMobileTransfer() {
+            const mobile = document.getElementById('mobileNumber').value;
+            const amount = document.getElementById('mobileAmount').value;
+            if (!mobile || mobile.length !== 10) { alert('Please enter valid 10 digit mobile number'); return; }
+            if (!amount || amount <= 0) { alert('Please enter valid amount'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function proceedBankTransfer() {
+            const account = document.getElementById('accountNumber').value;
+            const ifsc = document.getElementById('ifscCode').value;
+            const amount = document.getElementById('bankAmount').value;
+            if (!account || !ifsc) { alert('Please enter account number and IFSC code'); return; }
+            if (!amount || amount <= 0) { alert('Please enter valid amount'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function proceedSelfTransfer() {
+            const account = document.getElementById('selfAccount').value;
+            const amount = document.getElementById('selfAmount').value;
+            if (!account) { alert('Please select an account'); return; }
+            if (!amount || amount <= 0) { alert('Please enter valid amount'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function proceedRecharge() {
+            const mobile = document.getElementById('rechargeNumber').value;
+            const operator = document.getElementById('operator').value;
+            const amount = document.getElementById('rechargeAmount').value;
+            if (!mobile || mobile.length !== 10) { alert('Please enter valid 10 digit mobile number'); return; }
+            if (!operator) { alert('Please select operator'); return; }
+            if (!amount || amount <= 0) { alert('Please enter valid amount'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function proceedFastag() {
+            const vehicle = document.getElementById('vehicleNumber').value;
+            const bank = document.getElementById('fastagBank').value;
+            const amount = document.getElementById('fastagAmount').value;
+            if (!vehicle) { alert('Please enter vehicle number'); return; }
+            if (!bank) { alert('Please select issuer bank'); return; }
+            if (!amount || amount < 100) { alert('Minimum recharge amount is ₹100'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function proceedBill() {
+            const board = document.getElementById('electricityBoard').value;
+            const consumer = document.getElementById('consumerNumber').value;
+            const amount = document.getElementById('billAmount').value;
+            if (!board) { alert('Please select electricity board'); return; }
+            if (!consumer) { alert('Please enter consumer number'); return; }
+            if (!amount || amount <= 0) { alert('Please enter valid amount'); return; }
+            document.getElementById('amount').value = amount;
+            show('paymentSection');
+        }
+
+        function shareUPI() {
+            const message = "Pay me using UPI: yourname@paytm";
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+        
+        function showPayment() { show('paymentSection'); }
+
+        function showPaymentMethods() {
+            const amount = document.getElementById('amount').value;
+            if (!amount || amount <= 0) { alert('Please enter a valid amount'); return; }
+            document.getElementById('displayAmount').textContent = parseFloat(amount).toFixed(2);
+            show('paymentMethodSection');
+        }
+
+        function selectPayment(method) {
+            selectedMethod = method;
+            selectedMethodName = paymentNames[method];
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('payBtn').disabled = false;
+        }
+
+        function showPasswordVerification() {
+            if (!selectedMethod) { alert('Please select a payment method'); return; }
+            const amount = document.getElementById('amount').value;
+            document.getElementById('verifyAmount').textContent = parseFloat(amount).toFixed(2);
+            document.getElementById('verifyMethod').textContent = selectedMethodName;
+            show('passwordSection');
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = event.currentTarget;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+        
+        function processPayment() {
+            const password = document.getElementById('password').value;
+            if (!password || password.length < 4) { alert('Please enter a valid PIN/Password (minimum 4 characters)'); return; }
+            show('loadingSection');
+            setTimeout(() => document.getElementById('step2').classList.add('active'), 1000);
+            setTimeout(() => document.getElementById('step3').classList.add('active'), 2000);
+            setTimeout(() => showSuccess(document.getElementById('amount').value), 3000);
+        }
+
+        function showSuccess(amount) {
+            const txnId = 'TXN' + Date.now().toString().slice(-10);
+            document.getElementById('transactionId').textContent = txnId;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            document.getElementById('transactionTime').textContent = `${dateStr} at ${timeStr}`;
+            const cashback = (parseFloat(amount) * 0.02).toFixed(2);
+            document.getElementById('cashbackAmount').textContent = cashback;
+            document.getElementById('paidAmount').textContent = parseFloat(amount).toFixed(2);
+            document.getElementById('paidMethod').textContent = selectedMethodName;
+            show('successSection');
+            createConfetti();
+            playSuccessSound();
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.remove('active');
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#ffd700', '#ff6b6b', '#4caf50'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function playSuccessSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch(e) {}
+        }
+
+        function downloadReceipt() {
+            const amount = document.getElementById('paidAmount').textContent;
+            const method = document.getElementById('paidMethod').textContent;
+            const txnId = document.getElementById('transactionId').textContent;
+            const time = document.getElementById('transactionTime').textContent;
+            const receiptContent = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n        PAYEASY RECEIPT\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nTransaction ID: ${txnId}\nDate & Time: ${time}\n\nAmount Paid: ₹${amount}\nPayment Method: ${method}\nType: ${currentTransactionType || 'Payment'}\n\nStatus: SUCCESS ✓\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nThank you for using PayEasy!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n            `;
+            const blob = new Blob([receiptContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `PayEasy_Receipt_${txnId}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            document.getElementById('receiptMsg').classList.add('show');
+            setTimeout(() => document.getElementById('receiptMsg').classList.remove('show'), 3000);
+        }
+
+        function shareWhatsApp() {
+            const amount = document.getElementById('paidAmount').textContent;
+            const method = document.getElementById('paidMethod').textContent;
+            const txnId = document.getElementById('transactionId').textContent;
+            const time = document.getElementById('transactionTime').textContent;
+            const message = `✅ Payment Successful!\n\nAmount: ₹${amount}\nMethod: ${method}\nTransaction ID: ${txnId}\nDate: ${time}\n\nPowered by PayEasy`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function shareEmail() {
+            const amount = document.getElementById('paidAmount').textContent;
+            const method = document.getElementById('paidMethod').textContent;
+            const txnId = document.getElementById('transactionId').textContent;
+            const time = document.getElementById('transactionTime').textContent;
+            const subject = 'PayEasy Payment Receipt';
+            const body = `Payment Successful!\n\nAmount Paid: ₹${amount}\nPayment Method: ${method}\nTransaction ID: ${txnId}\nDate & Time: ${time}\n\nThank you for using PayEasy!`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        function copyReceipt() {
+            const amount = document.getElementById('paidAmount').textContent;
+            const method = document.getElementById('paidMethod').textContent;
+            const txnId = document.getElementById('transactionId').textContent;
+            const time = document.getElementById('transactionTime').textContent;
+            const receiptText = `PAYEASY RECEIPT\n\nTransaction ID: ${txnId}\nDate & Time: ${time}\nAmount: ₹${amount}\nMethod: ${method}\nStatus: SUCCESS ✓`;
+            navigator.clipboard.writeText(receiptText).then(() => {
+                document.getElementById('shareMsg').classList.add('show');
+                setTimeout(() => document.getElementById('shareMsg').classList.remove('show'), 2000);
+            });
+        }
+
+        function goBack(section) {
+            if (section === 'amount') show('paymentSection');
+            else if (section === 'methods') show('paymentMethodSection');
+        }
+    </script>
+</body>
+</html>
+
